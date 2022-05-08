@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+    <a href="{% url 'jobs:adauga' %}" class="btn btn-success">Add job</a>
+    <br>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Index</th>
+            <th>Type</th>
+            <th>Url</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>How to apply?</th>
+            <th>Active status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in jobs_list %}
+            <tr>
+                <td align="center">{{ forloop.counter }}</td>
+                <td align="center">{{ item.type }}</td>
+                <td align="center">{{ item.url }}</td>
+                <td align="center">{{ item.title }}</td>
+                <td alig="center">{{ item.description }}</td>
+                <td align="center">{{ item.how_to_apply }}</td>
+                <td align="center">{% if item.active == 1 %}
+                    <span>Active</span>
+                {% else %}
+                    <span>Inactive</span>
+                {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'jobs:modifica' item.id %}" class="btn btn-success" >Modify</a>
+                    {% if item.active == 1 %}
+                        <a href="{% url 'jobs:stergere' item.id %}" class="btn btn-danger">Deactivate</a>
+                    {% else %}
+                        <a href="{% url 'jobs:activeaza' item.id %}" class="btn btn-info">Activate</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if is_paginated %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a class="btn" href="?page={{ page_obj.previous_page_number }}"><<</a></li>
+            {% else %}
+                <li class="disabled btn"><span><<</span></li>
+            {% endif %}
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li class="active btn btn-info"><span>{{ i }}<span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li><a class="btn" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+         {% if page_obj.has_next %}
+                <li><a class="btn" href="?page={{ page_obj.next_page_number }}">>></a></li>
+            {% else %}
+                <li class="disabled btn"><span>>></span></li>
+            {% endif %}
+        </ul>
+    {% endif %}
+{% endblock %}
